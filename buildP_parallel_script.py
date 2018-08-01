@@ -340,7 +340,9 @@ def custom_leastsq_concept(c, l, A, max_time=3):
     #error, m, b = eval_direction(theta, c, l, A)
     return theta#, error
 
-def buildP(A, concepts_list, labels, A_test, test_labels, threshold, name="theta_list_para2"):
+print('Greedy interpret anyway (order independent)')
+
+def buildP(A, concepts_list, labels, A_test, test_labels, threshold, name):
 
     def data_range(A, t):
         return A.dot(t/t.dot(t)).ravel().std()
@@ -365,18 +367,25 @@ def buildP(A, concepts_list, labels, A_test, test_labels, threshold, name="theta
 
     A_backup = copy.deepcopy(A)
     theta_list = []
-    
-    concepts_used = []
-    print('fitting directions......')
-    errors = []
-    for _ in tqdm.tqdm(range(A.shape[1])):
-        min_c, theta, error = greedy_find_c(concepts_list, labels, A, A_test,test_labels)
-        concepts_used.append(min_c)
-        errors.append(error)
-        np.save("data/" + name, theta_list)
-        theta = orthogonize(theta, theta_list) # just make sure theta are orthogonal # note: randomness here
-        theta_list.append(theta)
-        A = A - np.outer(A.dot(theta).ravel(), theta) / np.sum(theta**2) # project data down 1 dimension
+
+    fname =  'data/' + name + ("" if name[-4:] == ".npy" else ".npy")
+    f_exist = os.path.isfile(fname)
+    if f_exist:
+        theta_list = np.load(fname)
+        f_exist = (len(theta_list) == A.shape[1])
+        
+    if not f_exist:    
+        print('fitting directions......')
+        concepts_used = []
+        errors = []
+        for _ in tqdm.tqdm(range(A.shape[1])):
+            min_c, theta, error = greedy_find_c(concepts_list, labels, A, A_test,test_labels)
+            concepts_used.append(min_c)
+            errors.append(error)
+            theta = orthogonize(theta, theta_list) # just make sure theta are orthogonal # note: randomness here
+            theta_list.append(theta)
+            np.save("data/" + name, theta_list)
+            A = A - np.outer(A.dot(theta).ravel(), theta) / np.sum(theta**2) # project data down 1 dimension
 
     A = copy.deepcopy(A_backup)
     P = np.vstack(theta_list).T
@@ -390,7 +399,6 @@ def buildP(A, concepts_list, labels, A_test, test_labels, threshold, name="theta
         slopes.append(m)
         min_c.append(c)
 
-    
     # decorrelate unknown data using pca
     B = A.dot(ortho_inverse(P).T) # new activation
     A = []
@@ -427,12 +435,11 @@ def buildP(A, concepts_list, labels, A_test, test_labels, threshold, name="theta
         slopes.append(m)
         min_c.append(c)
 
-    theta_list = list(map(lambda x: x[0] * np.sign(x[1]), zip(theta_list, slopes)))
+    theta_list = list(map(lambda x: x[0] * np.sign(x[1]), zip(theta_list, slopes))) 
     P = np.vstack(theta_list).T
+    np.save("data/" + name + '_final', theta_list)
 
-    np.save("data/" + name, theta_list)
     return P, errors, theta_list, min_c
-
 
 model = copy.deepcopy(alexnet)
 model.classifier = nn.Sequential(*list(alexnet.classifier.children())[:-1])
@@ -456,4 +463,4 @@ A_test = features_test.data.cpu().numpy()
 A = copy.deepcopy(activations)
 threshold = 0.071
 P, errors, theta_list, min_c = buildP(A, concepts, labels, A_test, test_labels,
-                                      threshold=threshold, name="theta_list_para2")
+                                      threshold=threshold, name="theta_list")
