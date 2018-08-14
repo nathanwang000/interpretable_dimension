@@ -13,13 +13,16 @@
 #+LANGUAGE: en
 #+SELECT_TAGS: export
 
-This repository contains two projects:
+This repository contains the project [[https://www.sharelatex.com/project/5b4dfdbbb3df7863a500b589][Interpretable Dimension]]
 
-[[https://www.sharelatex.com/project/5b4dfdbbb3df7863a500b589][Interpretable Dimension]]
+A good example of applying ID on Alexnet is contained in [[CPU_ID.ipynb]]
 
-and 
+Currently the most up to date code and a toy confounding example is contained in
+[[CPU_ID4.ipynb]]
 
-[[https://www.sharelatex.com/project/5b60d59fec111777327e20ae][Interpretable Linear Attention Network]]
+I'm refactoring the code to [[main.py]]
 
-The project uses [[https://tiny-imagenet.herokuapp.com/][tiny-imagenet-200]]
+# [[https://www.sharelatex.com/project/5b60d59fec111777327e20ae][Interpretable Linear Attention Network]]
+
+# The project uses [[https://tiny-imagenet.herokuapp.com/][tiny-imagenet-200]]
 
