@@ -18,9 +18,9 @@ This repository contains the project [[https://www.sharelatex.com/project/5b4dfd
 A good example of applying ID on Alexnet is contained in [[CPU_ID.ipynb]]
 
 Currently the most up to date code and a toy confounding example is contained in
-[[CPU_ID4.ipynb]]
+[[CPU_ID5.ipynb]].
 
-I'm refactoring the code to [[main.py]]
+I'm refactoring code to [[main.py]].
 
 # [[https://www.sharelatex.com/project/5b60d59fec111777327e20ae][Interpretable Linear Attention Network]]
 
