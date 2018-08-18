@@ -18,7 +18,7 @@ This repository contains the project [[https://www.sharelatex.com/project/5b4dfd
 A good example of applying ID on Alexnet is contained in [[CPU_ID.ipynb]]
 
 Currently the most up to date code and a toy confounding example is contained in
-[[CPU_ID5.ipynb]].
+[[CPU_ID6.ipynb]].
 
 I'm refactoring code to [[main.py]].
 
